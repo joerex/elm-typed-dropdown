@@ -65,9 +65,9 @@ type Dropdown
 -}
 type alias Settings =
     { placeHolder : String
-    , closedClass : String
+    , containerClass : String
     , openedClass : String
-    , menuClass : String
+    , closedClass : String
     , buttonClass : String
     , arrowUpClass : String
     , arrowDownClass : String
@@ -125,14 +125,14 @@ initWithSettings settings =
 defaultSettings : Settings
 defaultSettings =
     { placeHolder = "Select ..."
-    , closedClass = "dropdown"
-    , openedClass = "dropdown open"
-    , menuClass = "dropdown-menu"
+    , containerClass = "dropdown"
+    , openedClass = "dropdown-menu show"
+    , closedClass = "dropdown-menu"
     , buttonClass = "button-as-dropdown dropdown-toggle form-control"
     , arrowUpClass = "arrow glyphicon glyphicon-triangle-top"
     , arrowDownClass = "arrow glyphicon glyphicon-triangle-bottom"
-    , itemClass = ""
-    , activeItemClass = "active"
+    , itemClass = "dropdown-item"
+    , activeItemClass = " dropdown-item active"
     }
 
 
@@ -205,7 +205,7 @@ view items selectedItem descriptionOf (Dropdown { settings, state }) =
                 items
     in
     div
-        [ class clazz ]
+        [ class settings.containerClass ]
         [ button
             [ class settings.buttonClass
             , onClick (Toggle newState)
@@ -219,7 +219,7 @@ view items selectedItem descriptionOf (Dropdown { settings, state }) =
             , span [ class arrow ] []
             ]
         , ul
-            [ class settings.menuClass
+            [ class clazz
             ]
             menuItems
         ]
@@ -237,14 +237,11 @@ viewItem item descriptionOf active itemClass activeItemClass =
     let
         attrs =
             if active then
-                [ class activeItemClass ]
+                [ class activeItemClass, onItem "mousedown" (Select item) ]
 
             else
-                [ class itemClass ]
+                [ class itemClass, onItem "mousedown" (Select item) ]
     in
-    li
+    a
         attrs
-        [ a
-            [ onItem "mousedown" (Select item) ]
-            [ text (descriptionOf item) ]
-        ]
+        [ text (descriptionOf item) ]
